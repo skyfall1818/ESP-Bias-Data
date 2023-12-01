@@ -20,7 +20,7 @@ def get_accuracy(df):
     return metrics.accuracy_score(y_test, y_pred)
 
 
-weather_data = pd.read_csv("seattle-weather.csv.csv", header=None)
+weather_data = pd.read_csv("seattle-weather.csv", header=None)
 
 weather_data_with_holes = remove_datapoints(weather_data)
 
