@@ -4,11 +4,25 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import dtreeviz
+import category_encoders as ce
+from sklearn import tree
+from sklearn.inspection import DecisionBoundaryDisplay
+import seaborn as sns
+import matplotlib as mpl
+import numpy as np
+
+def add_noise(df):
+    random_state = np.random.RandomState()
+    n_samples, n_features = df.shape
+    x = np.concatenate([df, random_state.randn(n_samples, 200*n_features)], axis=1)
+    return x
 
 column_names = ['date', 'precipitation', 'temp_max', 'temp_min', 'wind', 'weather']
 features_cols = ['precipitation', 'temp_max', 'temp_min', 'wind']
 
 dataset_clean = pd.read_csv(r"C:\Users\sengj\Downloads\seattle-weather.csv", header=0, names=column_names)
+#y = add_noise(dataset_clean)
 dataset_10 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-10.csv", header=0, names=column_names)
 dataset_20 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-20.csv", header=0, names=column_names)
 dataset_30 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-30.csv", header=0, names=column_names)
@@ -51,9 +65,9 @@ y_pred_30 = clf_30.predict(X_test_30)
 
 # Accuracy of the classify 
 print("Accuracy:", metrics.accuracy_score(y_test_clean, y_pred_clean))
-print("Accuracy 10%:", metrics.accuracy_score(y_test_10, y_pred_10))
-print("Accuracy 20%:", metrics.accuracy_score(y_test_20, y_pred_20))
-print("Accuracy 30%:", metrics.accuracy_score(y_test_30, y_pred_30))
+print("Accuracy - 10%:", metrics.accuracy_score(y_test_10, y_pred_10))
+print("Accuracy - 20%:", metrics.accuracy_score(y_test_20, y_pred_20))
+print("Accuracy - 30%:", metrics.accuracy_score(y_test_30, y_pred_30))
 
 # Confusion Matrix
 cm_clean = confusion_matrix(y_test_clean, y_pred_clean)
@@ -75,3 +89,21 @@ cm_30 = confusion_matrix(y_test_30, y_pred_30)
 display_30 = ConfusionMatrixDisplay(confusion_matrix=cm_30, display_labels=clf_30.classes_)
 display_30.plot()
 plt.show()
+
+
+#Visualize Trees
+plt.figure(figsize=(12,12))
+tree.plot_tree(clf_clean, feature_names=features_cols, class_names=clf_clean.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+plt.savefig(r"C:\Users\sengj\Pictures\DT_clean", dpi=350)
+
+plt.figure(figsize=(12,12))
+tree.plot_tree(clf_10, feature_names=features_cols, class_names=clf_10.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+plt.savefig(r"C:\Users\sengj\Pictures\DT_10", dpi=350)
+
+plt.figure(figsize=(12,12))
+tree.plot_tree(clf_20, feature_names=features_cols, class_names=clf_20.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+plt.savefig(r"C:\Users\sengj\Pictures\DT_20", dpi=350)
+
+plt.figure(figsize=(12,12))
+tree.plot_tree(clf_30, feature_names=features_cols, class_names=clf_30.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+plt.savefig(r"C:\Users\sengj\Pictures\DT_30", dpi=350)
