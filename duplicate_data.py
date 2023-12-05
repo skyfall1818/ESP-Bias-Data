@@ -1,31 +1,39 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import dtreeviz
-import category_encoders as ce
 from sklearn import tree
-from sklearn.inspection import DecisionBoundaryDisplay
-import seaborn as sns
-import matplotlib as mpl
-import numpy as np
 
-def add_noise(df):
-    random_state = np.random.RandomState()
-    n_samples, n_features = df.shape
-    x = np.concatenate([df, random_state.randn(n_samples, 200*n_features)], axis=1)
-    return x
+def add_gaussian_noise(df, column_name):
+    mean = 1
+    std_dev = 0.8
+    noise = np.random.normal(mean, std_dev, df[column_name].shape)
+    #df[column_name + '_noise'] = df[column_name] + noise
+    df[column_name] = df[column_name] + noise
+
+def plot_noise(df, column_name_1, column_name_2):
+    ax = df.plot(kind="line", x="weather", y=[column_name_1, column_name_2])
+    ax.set_xlim(1,100)
+    plt.title('Effect of Gaussian Noise towards data')
+    plt.show()
 
 column_names = ['date', 'precipitation', 'temp_max', 'temp_min', 'wind', 'weather']
 features_cols = ['precipitation', 'temp_max', 'temp_min', 'wind']
 
+# Datasets
 dataset_clean = pd.read_csv(r"C:\Users\sengj\Downloads\seattle-weather.csv", header=0, names=column_names)
-#y = add_noise(dataset_clean)
 dataset_10 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-10.csv", header=0, names=column_names)
 dataset_20 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-20.csv", header=0, names=column_names)
 dataset_30 = pd.read_csv(r"C:\Users\sengj\OneDrive\Documents\seattle-weather-30.csv", header=0, names=column_names)
+
+# Add noise to data
+add_gaussian_noise(dataset_10, "precipitation")
+add_gaussian_noise(dataset_20, "precipitation")
+add_gaussian_noise(dataset_30, "precipitation")
 
 # Features
 x_clean = dataset_clean[features_cols]
@@ -92,18 +100,18 @@ plt.show()
 
 
 #Visualize Trees
-plt.figure(figsize=(12,12))
-tree.plot_tree(clf_clean, feature_names=features_cols, class_names=clf_clean.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
-plt.savefig(r"C:\Users\sengj\Pictures\DT_clean", dpi=350)
+#plt.figure(figsize=(12,12))
+#tree.plot_tree(clf_clean, feature_names=features_cols, class_names=clf_clean.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+#plt.savefig(r"C:\Users\sengj\Pictures\DT_clean", dpi=350)
 
-plt.figure(figsize=(12,12))
-tree.plot_tree(clf_10, feature_names=features_cols, class_names=clf_10.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
-plt.savefig(r"C:\Users\sengj\Pictures\DT_10", dpi=350)
+#plt.figure(figsize=(12,12))
+#tree.plot_tree(clf_10, feature_names=features_cols, class_names=clf_10.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+#plt.savefig(r"C:\Users\sengj\Pictures\DT_10", dpi=350)
 
-plt.figure(figsize=(12,12))
-tree.plot_tree(clf_20, feature_names=features_cols, class_names=clf_20.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
-plt.savefig(r"C:\Users\sengj\Pictures\DT_20", dpi=350)
+#plt.figure(figsize=(12,12))
+#tree.plot_tree(clf_20, feature_names=features_cols, class_names=clf_20.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+#plt.savefig(r"C:\Users\sengj\Pictures\DT_20", dpi=350)
 
-plt.figure(figsize=(12,12))
-tree.plot_tree(clf_30, feature_names=features_cols, class_names=clf_30.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
-plt.savefig(r"C:\Users\sengj\Pictures\DT_30", dpi=350)
+#plt.figure(figsize=(12,12))
+#tree.plot_tree(clf_30, feature_names=features_cols, class_names=clf_30.classes_.tolist(), filled=True, max_depth=3, fontsize=2)
+#plt.savefig(r"C:\Users\sengj\Pictures\DT_30", dpi=350)
