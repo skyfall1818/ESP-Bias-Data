@@ -33,7 +33,7 @@ def get_accuracy(df, image_name, baseline=False):
     clf = clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
 
-    plt.figure(figsize=(12, 12))
+    plt.figure(figsize=(16, 9))
     _ = tree.plot_tree(clf,
                        feature_names=feature_cols,
                        class_names=clf.classes_.tolist(),
